@@ -5,7 +5,23 @@
 </ion-header>
 
 <ion-content>
-  <ion-card *ngFor="let post of posts">
+  <div id="search">
+    <ion-item>
+      <ion-label position="floating">Buscar por ID</ion-label>
+      <ion-input [(ngModel)]="searchId" type="number"></ion-input>
+    </ion-item>
+
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" (click)="searchPost()">Buscar</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button expand="block" (click)="clearSearch()">Limpiar</ion-button>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <ion-card *ngFor="let post of filteredPosts">
     <ion-card-header>
       <ion-card-title>{{ post.title }}</ion-card-title>
     </ion-card-header>
