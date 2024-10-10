@@ -1,4 +1,4 @@
-<ion-tabs>
+<ion-tabs #myTabs>
   <ion-tab tab="getData">
     <ion-header>
       <ion-toolbar>
@@ -8,8 +8,7 @@
     <ion-content>
       <div id="search">
         <ion-item>
-          <ion-label position="floating">Buscar por ID</ion-label>
-          <ion-input [(ngModel)]="searchId" type="number"></ion-input>
+          <ion-input [(ngModel)]="searchId" type="number" label="Buscar por ID" labelPlacement="floating"></ion-input>
         </ion-item>
         
         <ion-row>
@@ -43,12 +42,10 @@
       <div id="createData">
         <h2>Crear Nuevo Dato</h2>
         <ion-item>
-          <ion-label position="floating">Título</ion-label>
-          <ion-input [(ngModel)]="newData.title"></ion-input>
+          <ion-input [(ngModel)]="newData.title" label="Título" labelPlacement="floating"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label position="floating">Contenido</ion-label>
-          <ion-textarea [(ngModel)]="newData.body"></ion-textarea>
+          <ion-input [(ngModel)]="newData.body" label="Contenido" labelPlacement="floating"></ion-input>
         </ion-item>
         <ion-button expand="block" (click)="createData()">Crear Dato</ion-button>
       </div>
@@ -65,16 +62,13 @@
       <div id="updateData">
         <h2>Actualizar Dato</h2>
         <ion-item>
-          <ion-label position="floating">ID del Dato</ion-label>
-          <ion-input [(ngModel)]="dataToUpdate.id" type="number"></ion-input>
+          <ion-input [(ngModel)]="dataToUpdate.id" type="number" label="ID del Dato" labelPlacement="floating"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label position="floating">Título</ion-label>
-          <ion-input [(ngModel)]="dataToUpdate.title"></ion-input>
+          <ion-input [(ngModel)]="dataToUpdate.title" label="Título" labelPlacement="floating"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label position="floating">Contenido</ion-label>
-          <ion-textarea [(ngModel)]="dataToUpdate.body"></ion-textarea>
+          <ion-input [(ngModel)]="dataToUpdate.body" label="Contenido" labelPlacement="floating"></ion-input>
         </ion-item>
         <ion-button expand="block" (click)="updateData()">Actualizar Dato</ion-button>
       </div>
