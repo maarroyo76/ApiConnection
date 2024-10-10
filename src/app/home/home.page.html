@@ -1,32 +1,72 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Posts</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-tabs>
+  <ion-tab tab="getPosts">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Obtener Posts</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <div id="search">
+        <ion-item>
+          <ion-label position="floating">Buscar por ID</ion-label>
+          <ion-input [(ngModel)]="searchId" type="number"></ion-input>
+        </ion-item>
+        
+        <ion-row>
+          <ion-col>
+            <ion-button expand="block" (click)="searchPost()">Buscar</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button expand="block" (click)="clearSearch()">Limpiar</ion-button>
+          </ion-col>
+        </ion-row>
+      </div>
+    
+      <ion-card *ngFor="let post of filteredPosts">
+        <ion-card-header>
+          <ion-card-title>{{ post.title }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>{{ post.body }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-content>
+  </ion-tab>
 
-<ion-content>
-  <div id="search">
-    <ion-item>
-      <ion-label position="floating">Buscar por ID</ion-label>
-      <ion-input [(ngModel)]="searchId" type="number"></ion-input>
-    </ion-item>
+  <ion-tab tab="putPost">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Actualizar Post</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <div id="updatePost">
+        <h2>Actualizar Post</h2>
+        <ion-item>
+          <ion-label position="floating">ID del Post</ion-label>
+          <ion-input [(ngModel)]="postToUpdate.id" type="number"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Título</ion-label>
+          <ion-input [(ngModel)]="postToUpdate.title"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Contenido</ion-label>
+          <ion-textarea [(ngModel)]="postToUpdate.body"></ion-textarea>
+        </ion-item>
+        <ion-button expand="block" (click)="updatePost()">Actualizar Post</ion-button>
+      </div>
+    </ion-content>
+  </ion-tab>
 
-    <ion-row>
-      <ion-col>
-        <ion-button expand="block" (click)="searchPost()">Buscar</ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button expand="block" (click)="clearSearch()">Limpiar</ion-button>
-      </ion-col>
-    </ion-row>
-  </div>
-
-  <ion-card *ngFor="let post of filteredPosts">
-    <ion-card-header>
-      <ion-card-title>{{ post.title }}</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p>{{ post.body }}</p>
-    </ion-card-content>
-  </ion-card>
-</ion-content>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="getPosts">
+      <ion-icon name="book"></ion-icon>
+      Obtener Posts
+    </ion-tab-button>
+    <ion-tab-button tab="putPost">
+      <ion-icon name="create"></ion-icon>
+      Actualizar Post
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

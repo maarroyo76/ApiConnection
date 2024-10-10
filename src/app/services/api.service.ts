@@ -15,4 +15,8 @@ export class ApiService {
   getData(): Observable<any> {
     return this.http.get(this.apiUrl);
   }
+
+  updatePost(id: number, post: any) {
+    return this.http.put(`https://jsonplaceholder.typicode.com/posts/${id}`, post);
+  }
 }
