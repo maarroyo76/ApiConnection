@@ -23,10 +23,28 @@
     
       <ion-card *ngFor="let data of filteredData">
         <ion-card-header>
-          <ion-card-title>{{ data.title }}</ion-card-title>
+          <ion-card-title>
+            <ion-row>
+              <ion-col size="10">
+                <ion-input *ngIf="data.editing" [(ngModel)]="data.title" placeholder="Editar título"></ion-input>
+                <span *ngIf="!data.editing">{{ data.title }}</span>
+              </ion-col>
+              <ion-col size="2" class="ion-text-right">
+                <ion-button size="small" fill="clear" (click)="enableEditing(data)">
+                  <ion-icon name="create-outline"></ion-icon>
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          <p>{{ data.body }}</p>
+          <ion-input *ngIf="data.editing" [(ngModel)]="data.body" placeholder="Editar contenido"></ion-input>
+          <p *ngIf="!data.editing">{{ data.body }}</p>
+
+          <!-- Botón para guardar cambios, visible solo si está en modo de edición -->
+          <ion-button *ngIf="data.editing" expand="block" (click)="saveChanges(data)">Guardar cambios</ion-button>
+          <!-- Botón para cancelar cambios, visible solo si está en modo de edición -->
+          <ion-button *ngIf="data.editing" expand="block" color="light" (click)="cancelEditing(data)">Cancelar</ion-button>
         </ion-card-content>
       </ion-card>
     </ion-content>

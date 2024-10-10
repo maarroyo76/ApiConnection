@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../services/api.service';
-import { ToastController, LoadingController, NavController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular';
 import { IonTabs } from '@ionic/angular';
 
 @Component({
@@ -8,7 +8,7 @@ import { IonTabs } from '@ionic/angular';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit, AfterViewInit {
+export class HomePage implements OnInit{
   @ViewChild('myTabs', { static: false }) tabs!: IonTabs; // Referencia al componente ion-tabs
   dataList: any[] = []; 
   filteredData: any[] = []; 
@@ -26,30 +26,23 @@ export class HomePage implements OnInit, AfterViewInit {
     body: ''
   };
 
+  originalData: any = {};
+
   constructor(
     private apiService: ApiService,
     private toastController: ToastController,
     private loadingController: LoadingController,
-    private navController: NavController
   ) {}
 
   ngOnInit() {
     this.loadData();
   }
 
-  ngAfterViewInit() {
-    // Asegúrate de que las tabs están listas para usarse
-    if (this.tabs) {
-      console.log('Tabs component is ready:', this.tabs);
-    } else {
-      console.error('Tabs component is not ready');
-    }
-  }
 
   loadData() {
     this.apiService.getData().subscribe((data: any) => {
-      this.dataList = data;
-      this.filteredData = data;
+      this.dataList = data.map((item: any) => ({ ...item, editing: false }));
+      this.filteredData = this.dataList;
     }, (error) => {
       console.error('Error al cargar los datos:', error);
     });
@@ -79,20 +72,57 @@ export class HomePage implements OnInit, AfterViewInit {
         (response) => {
           console.log('Nuevo dato creado:', response);
           this.dataList.push(response);
-          loading.dismiss(); // Cerrar el loading después de la operación exitosa
+          loading.dismiss();
           this.presentToast('Nuevo dato creado!', 'success');
-          this.tabs.select('getData'); // Cambiar a la tab de "Get Data"
+          this.tabs.select('getData'); 
           this.clearNewDataFields();
         },
         (error) => {
           console.error('Error al crear el dato:', error);
-          loading.dismiss(); // Cerrar el loading incluso si ocurre un error
+          loading.dismiss();
           this.presentToast('Error al crear el dato.', 'danger');
         }
       );
     } else {
       this.presentToast('Por favor, completa todos los campos.', 'warning');
     }
+  }
+
+  enableEditing(data: any) {
+    this.originalData = { ...data };
+    data.title = '';
+    data.body = '';
+    data.editing = true;
+  }
+
+  async saveChanges(data: any) {
+    if (data.id && data.title && data.body) {
+      const loading = await this.loadingController.create({
+        message: 'Guardando cambios...'
+      });
+      await loading.present();
+
+      this.apiService.updateData(data.id, data).subscribe(
+        () => {
+          data.editing = false; 
+          loading.dismiss();
+          this.presentToast('Cambios guardados!', 'success');
+        },
+        (error) => {
+          console.error('Error al guardar los cambios:', error);
+          loading.dismiss();
+          this.presentToast('Error al guardar los cambios.', 'danger');
+        }
+      );
+    } else {
+      this.presentToast('Por favor, completa todos los campos.', 'warning');
+    }
+  }
+
+  cancelEditing(data: any) {
+    data.title = this.originalData.title;
+    data.body = this.originalData.body;
+    data.editing = false;
   }
 
   async updateData() {
@@ -109,14 +139,14 @@ export class HomePage implements OnInit, AfterViewInit {
           () => {
             existingData.title = this.dataToUpdate.title;
             existingData.body = this.dataToUpdate.body;
-            loading.dismiss(); // Cerrar el loading después de la operación exitosa
+            loading.dismiss();
             this.presentToast('Dato actualizado!', 'success');
-            this.tabs.select('getData'); // Cambiar a la tab de "Get Data"
+            this.tabs.select('getData'); 
             this.clearUpdateFields();
           },
           (error) => {
             console.error('Error al actualizar el dato:', error);
-            loading.dismiss(); // Cerrar el loading incluso si ocurre un error
+            loading.dismiss(); 
             this.presentToast('Error al actualizar el dato.', 'danger');
           }
         );
