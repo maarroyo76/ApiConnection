@@ -6,17 +6,22 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+  private apiUrl = 'https://jsonplaceholder.typicode.com/posts'; // Cambia esta URL por la de tu API
 
-  constructor(
-    private http: HttpClient
-  ) { }
+  constructor(private http: HttpClient) {}
 
+  // Obtener todos los datos
   getData(): Observable<any> {
-    return this.http.get(this.apiUrl);
+    return this.http.get<any>(this.apiUrl);
   }
 
-  updatePost(id: number, post: any) {
-    return this.http.put(`https://jsonplaceholder.typicode.com/posts/${id}`, post);
+  // Crear un nuevo dato
+  createData(newData: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, newData);
+  }
+
+  // Actualizar un dato existente
+  updateData(id: number, updatedData: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, updatedData);
   }
 }

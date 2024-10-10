@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
-import { ToastController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -8,11 +8,17 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
-  posts: any[] = [];
-  filteredPosts: any[] = [];
+  dataList: any[] = []; 
+  filteredData: any[] = []; 
   searchId: number | null = null;
 
-  postToUpdate: any = {
+  newData: any = {
+    id: null,
+    title: '',
+    body: ''
+  };
+
+  dataToUpdate: any = { 
     id: null,
     title: '',
     body: ''
@@ -20,59 +26,91 @@ export class HomePage implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingController: LoadingController
   ) {}
 
   ngOnInit() {
-    this.loadPosts();
+    this.loadData();
   }
 
-  loadPosts() {
+  loadData() {
     this.apiService.getData().subscribe((data: any) => {
-      this.posts = data;
-      this.filteredPosts = data;
+      this.dataList = data;
+      this.filteredData = data;
     }, (error) => {
       console.error('Error al cargar los datos:', error);
     });
   }
 
-  searchPost() {
+  searchData() {
     if (this.searchId !== null) {
-      this.filteredPosts = this.posts.filter(post => post.id === this.searchId);
+      this.filteredData = this.dataList.filter(data => data.id === this.searchId);
     } else {
-      this.filteredPosts = this.posts;
+      this.filteredData = this.dataList;
     }
   }
 
   clearSearch() {
     this.searchId = null;
-    this.filteredPosts = this.posts;
+    this.filteredData = this.dataList;
   }
 
-  updatePost() {
-    // Validar que todos los campos estén completos
-    if (this.postToUpdate.id && this.postToUpdate.title && this.postToUpdate.body) {
-      const postToUpdate = this.posts.find(post => post.id === this.postToUpdate.id);
-      
-      if (postToUpdate) {
-        this.apiService.updatePost(this.postToUpdate.id, this.postToUpdate).subscribe(() => {
-          postToUpdate.title = this.postToUpdate.title;
-          postToUpdate.body = this.postToUpdate.body;
-          this.presentToast('Post actualizado!', 'success');
-          this.clearUpdateFields();
-        }, (error) => {
-          this.presentToast('Error al actualizar el post.', 'danger');
-        });
-      } else {
-        this.presentToast('Post no encontrado.', 'danger');
-      }
+  createData() {
+    if (this.newData.title && this.newData.body) {
+      this.loadingController.create({
+        message: 'Creando...'
+      }).then((loading) => {
+        loading.present();
+      });
+      this.apiService.createData(this.newData).subscribe((response) => {
+        console.log('Nuevo dato creado:', response);
+        this.dataList.push(response);
+        this.loadingController.dismiss();
+        this.presentToast('Nuevo dato creado!', 'success');
+        this.clearNewDataFields();
+      }, (error) => {
+        console.error('Error al crear el dato:', error);
+        this.presentToast('Error al crear el dato.', 'danger');
+      });
     } else {
-      this.presentToast('Por favor, complete todos los campos.', 'warning');
+      this.presentToast('Por favor, completa todos los campos.', 'warning');
     }
   }
 
+  updateData() {
+    if (this.dataToUpdate.id && this.dataToUpdate.title && this.dataToUpdate.body) {
+      const existingData = this.dataList.find(data => data.id === this.dataToUpdate.id);
+
+      if (existingData) {
+        this.loadingController.create({
+          message: 'Actualizando...'
+        }).then((loading) => {
+          loading.present();
+        });
+        this.apiService.updateData(this.dataToUpdate.id, this.dataToUpdate).subscribe(() => {
+          existingData.title = this.dataToUpdate.title;
+          existingData.body = this.dataToUpdate.body;
+          this.loadingController.dismiss();
+          this.presentToast('Dato actualizado!', 'success');
+          this.clearUpdateFields();
+        }, (error) => {
+          this.presentToast('Error al actualizar el dato.', 'danger');
+        });
+      } else {
+        this.presentToast('Dato no encontrado.', 'danger');
+      }
+    } else {
+      this.presentToast('Por favor, completa todos los campos.', 'warning');
+    }
+  }
+
+  clearNewDataFields() {
+    this.newData = { id: null, title: '', body: '' };
+  }
+
   clearUpdateFields() {
-    this.postToUpdate = { id: null, title: '', body: '' };
+    this.dataToUpdate = { id: null, title: '', body: '' };
   }
 
   async presentToast(message: string, color: string) {

@@ -1,8 +1,8 @@
 <ion-tabs>
-  <ion-tab tab="getPosts">
+  <ion-tab tab="getData">
     <ion-header>
       <ion-toolbar>
-        <ion-title>Obtener Posts</ion-title>
+        <ion-title>Obtener Datos</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
@@ -14,7 +14,7 @@
         
         <ion-row>
           <ion-col>
-            <ion-button expand="block" (click)="searchPost()">Buscar</ion-button>
+            <ion-button expand="block" (click)="searchData()">Buscar</ion-button>
           </ion-col>
           <ion-col>
             <ion-button expand="block" (click)="clearSearch()">Limpiar</ion-button>
@@ -22,51 +22,77 @@
         </ion-row>
       </div>
     
-      <ion-card *ngFor="let post of filteredPosts">
+      <ion-card *ngFor="let data of filteredData">
         <ion-card-header>
-          <ion-card-title>{{ post.title }}</ion-card-title>
+          <ion-card-title>{{ data.title }}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          <p>{{ post.body }}</p>
+          <p>{{ data.body }}</p>
         </ion-card-content>
       </ion-card>
     </ion-content>
   </ion-tab>
 
-  <ion-tab tab="putPost">
+  <ion-tab tab="postData">
     <ion-header>
       <ion-toolbar>
-        <ion-title>Actualizar Post</ion-title>
+        <ion-title>Crear Nuevo Dato</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <div id="updatePost">
-        <h2>Actualizar Post</h2>
-        <ion-item>
-          <ion-label position="floating">ID del Post</ion-label>
-          <ion-input [(ngModel)]="postToUpdate.id" type="number"></ion-input>
-        </ion-item>
+      <div id="createData">
+        <h2>Crear Nuevo Dato</h2>
         <ion-item>
           <ion-label position="floating">Título</ion-label>
-          <ion-input [(ngModel)]="postToUpdate.title"></ion-input>
+          <ion-input [(ngModel)]="newData.title"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Contenido</ion-label>
-          <ion-textarea [(ngModel)]="postToUpdate.body"></ion-textarea>
+          <ion-textarea [(ngModel)]="newData.body"></ion-textarea>
         </ion-item>
-        <ion-button expand="block" (click)="updatePost()">Actualizar Post</ion-button>
+        <ion-button expand="block" (click)="createData()">Crear Dato</ion-button>
+      </div>
+    </ion-content>
+  </ion-tab>
+
+  <ion-tab tab="putData">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Actualizar Dato</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <div id="updateData">
+        <h2>Actualizar Dato</h2>
+        <ion-item>
+          <ion-label position="floating">ID del Dato</ion-label>
+          <ion-input [(ngModel)]="dataToUpdate.id" type="number"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Título</ion-label>
+          <ion-input [(ngModel)]="dataToUpdate.title"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Contenido</ion-label>
+          <ion-textarea [(ngModel)]="dataToUpdate.body"></ion-textarea>
+        </ion-item>
+        <ion-button expand="block" (click)="updateData()">Actualizar Dato</ion-button>
       </div>
     </ion-content>
   </ion-tab>
 
   <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="getPosts">
+    <ion-tab-button tab="getData">
       <ion-icon name="book"></ion-icon>
-      Obtener Posts
+      Obtener Datos
     </ion-tab-button>
-    <ion-tab-button tab="putPost">
+    <ion-tab-button tab="postData">
+      <ion-icon name="add"></ion-icon>
+      Crear Dato
+    </ion-tab-button>
+    <ion-tab-button tab="putData">
       <ion-icon name="create"></ion-icon>
-      Actualizar Post
+      Actualizar Dato
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>
